@@ -1,0 +1,75 @@
+body {
+  height: 100%;
+  width: 100%;
+  margin: 20;
+}
+
+#map-id {
+  height: 100%;
+  width: 100%;
+}
+/* #sample-metadata {
+  height: 420px;
+} */
+.hero {
+    position: relative;
+    height: 220px;
+    padding: 20px;
+    margin: 0;
+    background: black;
+    background-image: url("../images/edge1030.jpg");
+    /* background-attachment: fixed; */
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    text-align: center;
+  }
+
+.stay {
+    position: fixed;
+}
+
+.pad{
+    margin-top: 50px;
+}
+
+.vh {
+
+    min-height: 100vh;
+}
+body {
+  margin: 0;
+}
+svg {
+  position: relative;
+}
+path {
+  fill: yellow;
+  stroke-width: 2px;
+  stroke: red;
+  stroke-opacity: 1;
+}
+.travelMarker {
+  fill: yellow;
+  opacity: 0.75;
+}
+.waypoints {
+  fill: rgb(43, 63, 245);
+  opacity: 0;
+}
+}
+.points {
+stroke: rgb(248, 40, 4);
+fill:green;
+}
+.lineConnect {
+fill: none;
+stroke: red;
+opacity: .75;
+}
+.locnames {
+fill: black;
+text-shadow: 1px 1px 1px #FFF, 3px 3px 5px #000;
+font-weight: bold;
+font-size: 13px;
+}
