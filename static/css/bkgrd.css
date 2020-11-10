@@ -4,14 +4,18 @@ body {
   margin: 20;
 }
 
-#map-id {
+/* #map {
   height: 100%;
   width: 100%;
+} */
+
+#activity-summary {
+  color: gray
 }
 /* #sample-metadata {
   height: 420px;
 } */
-.hero {
+/* .hero {
     position: relative;
     height: 220px;
     padding: 20px;
@@ -23,7 +27,7 @@ body {
     background-size: 100%;
     background-repeat: no-repeat;
     text-align: center;
-  }
+  } */
 
 .stay {
     position: fixed;

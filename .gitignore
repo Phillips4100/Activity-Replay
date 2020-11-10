@@ -131,3 +131,4 @@ dmypy.json
 #static
 config.py
 config.txt
+config_key.js
