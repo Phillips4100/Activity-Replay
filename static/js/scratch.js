@@ -19,14 +19,14 @@ function buildTable(activityID) {
             } else if (key=="max_hrt_rate") {
                 key = "Max Heart Rate"
                 table.append("h5").text(`${key}: ${value}`);
-            } else if (key=="total_distance") {
-                key = "Total Distance"
-                value = value*.00062
-                table.append("h5").text(`${key}: ${value} miles`);
-            } else if (key=="duration") {
-                key = "Duration"
-                value = value/60
-                table.append("h5").text(`${key}: ${value} min`);
+            // } else if (key=="total_distance") {
+            //     key = "Total Distance"
+            //     value = value*.00062
+            //     table.append("h5").text(`${key}: ${value} miles`);
+            // } else if (key=="duration") {
+            //     key = "Duration"
+            //     value = value/60
+            //     table.append("h5").text(`${key}: ${value} min`);
             } else {
                 table.append("h5").text(`${key}: ${value}`);
             }
@@ -141,7 +141,7 @@ function buildMap(activity_number) {
         var gomap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
             attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
             maxZoom: 18,
-            id: "light-v10",
+            id: "outdoors-v11",
             accessToken: API_KEY
         });
 
@@ -160,7 +160,7 @@ function buildMap(activity_number) {
 
         var map = L.map('map')
         .addLayer(gomap)
-        .setView([latC, lonC], 10);
+        .setView([latC, lonC], 11);
 
         var svg = d3.select(map.getPanes().overlayPane).append("svg");
         var g = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -258,7 +258,7 @@ function buildMap(activity_number) {
 
     function transition() {
         linePath.transition()
-            .duration(15000)
+            .duration(25000)
             .attrTween("stroke-dasharray", tweenDash)
     }
     function tweenDash() {
