@@ -47,8 +47,8 @@ def summary_data(activity_id):
 	# "total_distance": (f'{round(data.act_distance, 2)}'),
     "total_distance": round(data.act_distance*0.000621371, 2),
 	"duration": duration,
-	"elevation_gain": (f'{data.act_elegain} Meters'),
-	"elevation_loss": (f'{data.act_eleloss} Meters'),
+	"elevation_gain": (f'{data.act_elegain}'),
+	"elevation_loss": (f'{data.act_eleloss}'),
 	"avg_speed": (f'{round(data.act_avgspeed*2.24, 1)}'),
 	"max_speed": (f'{round(data.act_max_speed*2.24, 1)}'),
 	"timestamp": data.act_timestamp,
@@ -74,7 +74,7 @@ def trackpoint_data(activity_id):
     } for trackpoint in data]
     return jsonify(trackpoints)
 
-@app.route("/all_data/<activity_id>")
+@app.route("/all_track_data/<activity_id>")
 def all_data(activity_id):
     # Get activity summary data
     data = session.query(Activities).filter_by(act_id=activity_id).first()
@@ -110,15 +110,15 @@ def all_data(activity_id):
     }
     return jsonify(data)
 
-@app.route("/activity_dates")
-def get_activity_dates():
-    dates = []
+@app.route("/activity_ids")
+def get_activity_ids():
+    ids = []
     activity_data = session.query(Activities)
     for record in activity_data:
         (activities) = record
-        if activities.act_date not in  dates:
-            dates.append(activities.act_date)
-    return jsonify(dates)
+        if activities.act_id not in  ids:
+            ids.append(activities.act_id)
+    return jsonify(ids)
 
 @app.route("/activity_numbers")
 def get_unique_ids():
@@ -134,7 +134,7 @@ import flask.json
 
 @app.route("/geojson/<activity_id>")
 def geojson(activity_id):
-    data = session.query(Trackpoints).filter_by(act_id=activity_id).order_by(Trackpoints.tr_distance).all()
+    data = session.query(Trackpoints).filter_by(act_id=activity_id).order_by(Trackpoints.tr_distance).filter(Trackpoints.tr_latitude > 0)
     features = []
     
     for trackpoint in data:

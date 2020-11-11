@@ -5,20 +5,28 @@ function dropDown(ids) {
     });
   };
   
-  d3.json("http://127.0.0.1:5000/activity_dates").then(ids => {
-    dropDown(ids);
-  })
-  
+  d3.json("http://127.0.0.1:5000/activity_ids").then(id => {
+    dropDown(id);
+  });
+
+//   function getIdByDate(date) {
+//     data = ('http://127.0.0.1:5000/summary')
+//     return (data).filter(
+//         function(data){ return data.date == date }
+//     );
+//   }
+
 function buildTable(activityID) {
     var table = d3.select("#activity-summary")
     d3.json(`http://127.0.0.1:5000/summary/${activityID}`).then((data) => {
         Object.entries(data).forEach(([key, value]) => {
-            if (key=="avg_hrt_rate") {
-                key = "Avg Heart Rate"
-                table.append("h5").text(`${key}: ${value}`);
-            } else if (key=="max_hrt_rate") {
-                key = "Max Heart Rate"
-                table.append("h5").text(`${key}: ${value}`);
+            if (key=="name") {
+                key = "name"
+                table.append("h5").text(`${value}`);
+            // } else if (key=="date") {
+            //     key = "date"
+            //     table.append("h5").text(`${value}`);
+            // }
             // } else if (key=="total_distance") {
             //     key = "Total Distance"
             //     value = value*.00062
@@ -49,55 +57,25 @@ function optionChanged(activityID) {
     // moveGuage(activity_number);
 };
 
-// function moveGuage(activity_number) {
-
-
-//     d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(data => {
-//         console.log("Hello")
-//         var speedList = data.features.map(data => data.properties.speed);
-//         speedList.forEach(speed => {
-//             // var input = d3.select("#myValues").attr("value", speed)
-//             $(input).keyup(d3.select("#myValues").attr("value", speed))
-//         })
-//     })
-// }
-
-
 function speedGauge(selectedID) {
     d3.json(`http://127.0.0.1:5000/geojson/${selectedID}`).then(data => {
         // IDselected=ids.filter(id.activity_id=selectedID)
         maxSpeed = d3.max(data.features.map(data => data.properties.speed));
         maxSpeed = +maxSpeed
-        console.log(`Max Speed: ${maxSpeed}`);
+        // console.log(`Max Speed: ${maxSpeed}`);
         var gauges = []
         var opt = {
             gaugeRadius: 140,
             minVal: 0,
             maxVal: 50,
             needleVal: maxSpeed*2.24, 
-            //needleVal: Math.floor(Math.random() * 50) + 1 ,
             tickSpaceMinVal: 2,
             tickSpaceMajVal: 10,
             divID: "gaugeBox",
             gaugeUnits: "mph"
         }
-        console.log(opt);
+        // console.log(opt);
         gauges[0] = new drawGauge(opt)
-        // document.addEventListener("DOMContentLoaded", function (event, maxSpeed) {
-        //     var opt = {
-        //         gaugeRadius: 140,
-        //         minVal: 0,
-        //         maxVal: 50,
-        //         needleVal: maxSpeed, 
-        //         //needleVal: Math.floor(Math.random() * 50) + 1 ,
-        //         tickSpaceMinVal: 2,
-        //         tickSpaceMajVal: 10,
-        //         divID: "gaugeBox",
-        //         gaugeUnits: "mph"
-        //     }
-        //     console.log(opt);
-        //     gauges[0] = new drawGauge(opt)
-        // });
     });
 }
 
@@ -107,35 +85,6 @@ function speedGauge(selectedID) {
 
 function buildMap(activity_number) {
     d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(data => {
-        // maxSpeed = d3.max(data.features.map(data => data.properties.speed));
-        // console.log(maxSpeed);
-        // var gauges = []
-        // document.addEventListener("DOMContentLoaded", function (event) {
-        //     // d3.select("#marker").on("propertychanged", function(event) {
-        //     // Create new variable called buildGauge and use it to replace (60)
-        //     // var buildGauge = d3.json("C:/Users/bbahaneb/Documents/DU Data Bootcamp/Digital-Workout-Tracker/App2/data/test2.geojson").then(collection => {
-        //     //     var features = collection.features.filter(function (d) {
-        //     //         return d.properties.Speed > 0
-        //     //         return d.properties.Time != null
-        //     //     })
-
-        //     // var speeds = data.features.filter(feature => feature.properties.speed)
-        //     // console.log(speeds);
-
-        //     var opt = {
-        //         gaugeRadius: 140,
-        //         minVal: 0,
-        //         maxVal: 100,
-        //         needleVal: Math.round(10),
-        //         tickSpaceMinVal: 1,
-        //         tickSpaceMajVal: 10,
-        //         divID: "gaugeBox",
-        //         gaugeUnits: "mph"
-        //     }
-        //     console.log(opt);
-
-        //     gauges[0] = new drawGauge(opt);
-        // })
 
         // Create the tile layer that will be the background of our map
         var gomap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
@@ -150,17 +99,17 @@ function buildMap(activity_number) {
         });
 
         var properties = data.features;
-        console.log(properties);
+        // console.log(properties);
 
         // calculate center of map and add map layer
         latC = d3.median(properties.map(item => item.properties.latitude))
         lonC = d3.median(properties.map(item => item.properties.longitude))
-        console.log(`lat: ${latC}`)
-        console.log(`lon: ${lonC}`)
-
+        // console.log(`lat: ${latC}`)
+        // console.log(`lon: ${lonC}`)
+        
         var map = L.map('map')
         .addLayer(gomap)
-        .setView([latC, lonC], 11);
+        .setView([latC, lonC], 11)
 
         var svg = d3.select(map.getPanes().overlayPane).append("svg");
         var g = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -229,15 +178,15 @@ function buildMap(activity_number) {
         var bounds = d3path.bounds(data),
             topLeft = bounds[0],
             bottomRight = bounds[1];
-            console.log(bounds)
+            // console.log(bounds)
+        
         begin.attr("transform", d => 
             "translate(" + applyLatLngToLayer(d).x + "," + applyLatLngToLayer(d).y + ")");
-        // ptFeatures.attr("transform", d => 
-        //     "translate(" + applyLatLngToLayer(d).x + "," + applyLatLngToLayer(d).y + ")");
+
         marker.attr("transform", function() {
               const coords = features[0].geometry.coordinates;
                           const pt = map.latLngToLayerPoint(new L.LatLng(coords[1], coords[0]));
-            console.log(coords)
+            // console.log(coords)
               return "translate(" + pt.x + "," + pt.y + ")";
           });
         text.attr("transform", function(d) {
@@ -251,14 +200,14 @@ function buildMap(activity_number) {
             .style("left", topLeft[0] - 50 + "px")
             .style("top", topLeft[1] - 50 + "px");
         linePath.attr("d", toLine);
-        // linePath.attr("d", d3path);
+
         g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
     } // end reset
 
 
     function transition() {
         linePath.transition()
-            .duration(25000)
+            .duration(20000)
             .attrTween("stroke-dasharray", tweenDash)
     }
     function tweenDash() {
@@ -293,7 +242,7 @@ function buildMap(activity_number) {
     });
 }
 
-buildTable(1926552470);
-buildMap(1926552470);
-speedGauge(1926552470);
+buildTable(5636969541);
+buildMap(5636969541);
+speedGauge(5636969541);
 // moveGuage(1926552470);
