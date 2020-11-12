@@ -23,18 +23,6 @@ function buildTable(activityID) {
             if (key=="name") {
                 key = "name"
                 table.append("h5").text(`${value}`);
-            // } else if (key=="date") {
-            //     key = "date"
-            //     table.append("h5").text(`${value}`);
-            // }
-            // } else if (key=="total_distance") {
-            //     key = "Total Distance"
-            //     value = value*.00062
-            //     table.append("h5").text(`${key}: ${value} miles`);
-            // } else if (key=="duration") {
-            //     key = "Duration"
-            //     value = value/60
-            //     table.append("h5").text(`${key}: ${value} min`);
             } else {
                 table.append("h5").text(`${key}: ${value}`);
             }
@@ -101,15 +89,52 @@ function buildMap(activity_number) {
         var properties = data.features;
         // console.log(properties);
 
-        // calculate center of map and add map layer
-        latC = d3.median(properties.map(item => item.properties.latitude))
-        lonC = d3.median(properties.map(item => item.properties.longitude))
-        // console.log(`lat: ${latC}`)
-        // console.log(`lon: ${lonC}`)
-        
+        // calculate center of map and add map layer and setView
+        d3path = d3.geoPath().projection(transform);
+        bounds = d3path.bounds(data);
+
+        function getCenter(bounds) {
+            lon1 = bounds[0][0]
+            lon2 = bounds[1][0]
+            lat1 = bounds[0][1]
+            lat2 = bounds[1][1]
+            lonc = Math.abs(lon1-lon2)/2
+            latc = Math.abs(lat1 - lat2)/2
+            latC = latc + (d3.min(properties.map(item => item.properties.latitude)))
+            lonC = lonc + (d3.min(properties.map(item => item.properties.longitude)))
+            // console.log(lon1 - lon2)
+            // console.log(lat1 - lat2)
+            return [latC, lonC]
+        };
+        // console.log(getCenter(bounds))
+
+        function getZoom(bounds) {
+            lat1 = bounds[0][1]
+            lat2 = bounds[1][1]
+            latc = Math.abs(lat1 - lat2)
+            zoom = 0
+            if (latc < .0152) {
+                zoom = 15;
+              } else if (latc >= .0152 && latc <.03) {
+                zoom = 14;
+              } else if (latc >= .03 && latc <.062) {
+                zoom = 13;
+              } else if (latc >= .062 && latc <.13) {
+                zoom = 12;
+              } else if (latc >= .13 && latc <.23) {
+                zoom = 11;
+              } else if (latc >= .23 && latc <=.6) {
+                zoom = 10;
+              } else {
+                zoom = 9;
+              }              
+            return (zoom)
+        };
+
+        // console.log(getZoom(bounds))
         var map = L.map('map')
         .addLayer(gomap)
-        .setView([latC, lonC], 11)
+        .setView(getCenter(bounds), getZoom(bounds))
 
         var svg = d3.select(map.getPanes().overlayPane).append("svg");
         var g = svg.append("g").attr("class", "leaflet-zoom-hide");
