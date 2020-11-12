@@ -33,8 +33,10 @@ function buildTable(activityID) {
 function deleteCurrent() {
     d3.select("#activity-summary").selectAll("h5").remove();
     d3.select("#map").remove();
-    d3.select("#mapping").append("div").attr("id", "map").style("height", "500px")
+    d3.select("#mapping").append("div").attr("id", "map").style("height", "450px");
     d3.select("#SVGbox-gaugeBox").remove();
+    d3.select("#elevation").remove();
+    d3.select("#mapping").append("div").attr("id", "elevation").style("height", "170px");
 }
 
 function optionChanged(activityID) {
@@ -42,34 +44,41 @@ function optionChanged(activityID) {
     buildTable(activityID);
     buildMap(activityID)
     speedGauge(activityID);
-    // moveGuage(activity_number);
+    getaltGraph(activityID)
 };
 
-function speedGauge(selectedID) {
-    d3.json(`http://127.0.0.1:5000/geojson/${selectedID}`).then(data => {
-        // IDselected=ids.filter(id.activity_id=selectedID)
-        maxSpeed = d3.max(data.features.map(data => data.properties.speed));
-        maxSpeed = +maxSpeed
-        // console.log(`Max Speed: ${maxSpeed}`);
-        var gauges = []
-        var opt = {
-            gaugeRadius: 140,
-            minVal: 0,
-            maxVal: 50,
-            needleVal: maxSpeed*2.24, 
-            tickSpaceMinVal: 2,
-            tickSpaceMajVal: 10,
-            divID: "gaugeBox",
-            gaugeUnits: "mph"
-        }
-        // console.log(opt);
-        gauges[0] = new drawGauge(opt)
-    });
-}
+function getaltGraph(activity_number) {
+    d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(filtered => {
+        altitude = d3.select(filtered.features.map(data => data.properties.altitude));
+        distance = d3.select(filtered.features.map(data => data.properties.distance));
 
+        var x = distance._groups[0][0]
+        var y = altitude._groups[0][0]
+        // console.log(x, y);
+        var trace1 = [{
+            x: x,
+            y: y,
+            mode: 'lines'
+          }];
 
+        var layout1 = {
+            width: 900,
+            height: 170,
+            margin: {
+                l: 40,
+                r: 0,
+                b: 50,
+                t: 10,
+                pad: 5
+              },
+        };
 
-
+        var config = {responsive: true}
+        //   console.log(trace1)
+          Plotly.newPlot('elevation', trace1, layout1, config);
+    })
+    // return(altitude, distance)
+};
 
 function buildMap(activity_number) {
     d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(data => {
@@ -266,8 +275,29 @@ function buildMap(activity_number) {
     };
     });
 }
+function speedGauge(selectedID) {
+    d3.json(`http://127.0.0.1:5000/geojson/${selectedID}`).then(data => {
+        // IDselected=ids.filter(id.activity_id=selectedID)
+        maxSpeed = d3.max(data.features.map(data => data.properties.speed));
+        maxSpeed = +maxSpeed
+        // console.log(`Max Speed: ${maxSpeed}`);
+        var gauges = []
+        var opt = {
+            gaugeRadius: 140,
+            minVal: 0,
+            maxVal: 50,
+            needleVal: maxSpeed*2.24, 
+            tickSpaceMinVal: 2,
+            tickSpaceMajVal: 10,
+            divID: "gaugeBox",
+            gaugeUnits: "mph"
+        }
+        // console.log(opt);
+        gauges[0] = new drawGauge(opt)
+    });
+}
 
 buildTable(5636969541);
 buildMap(5636969541);
 speedGauge(5636969541);
-// moveGuage(1926552470);
+getaltGraph(5636969541);
