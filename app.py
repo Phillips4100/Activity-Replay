@@ -47,8 +47,8 @@ def summary_data(activity_id):
 	# "total_distance": (f'{round(data.act_distance, 2)}'),
     "total_distance": round(data.act_distance*0.000621371, 2),
 	"duration": duration,
-	"elevation_gain": (f'{data.act_elegain}'),
-	"elevation_loss": (f'{data.act_eleloss}'),
+	"elevation_gain": (data.act_elegain*3.28084),
+	"elevation_loss": (data.act_eleloss*3.28084),
 	"avg_speed": (f'{round(data.act_avgspeed*2.24, 1)}'),
 	"max_speed": (f'{round(data.act_max_speed*2.24, 1)}'),
 	"timestamp": data.act_timestamp,
@@ -145,8 +145,8 @@ def geojson(activity_id):
             "latitude": trackpoint.tr_latitude,
             "longitude": trackpoint.tr_longtitude,
             "hrt_rate": trackpoint.tr_hrt_rate,
-            "altitude": trackpoint.tr_altitude,
-            "distance": trackpoint.tr_distance,
+            "altitude": trackpoint.tr_altitude*3.28084,
+            "distance": trackpoint.tr_distance*0.000621371,
             "speed": trackpoint.tr_speed
         }
         

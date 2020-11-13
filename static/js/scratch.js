@@ -49,21 +49,25 @@ function optionChanged(activityID) {
 
 function getaltGraph(activity_number) {
     d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(filtered => {
-        altitude = d3.select(filtered.features.map(data => data.properties.altitude));
-        distance = d3.select(filtered.features.map(data => data.properties.distance));
+        altitude = d3.select(filtered.features.map(data => data.properties.altitude))._groups[0][0];
+        distance = d3.select(filtered.features.map(data => data.properties.distance))._groups[0][0];
 
-        var x = distance._groups[0][0]
-        var y = altitude._groups[0][0]
-        // console.log(x, y);
+        var x = distance
+        var y = altitude
+        console.log(Math.min(...y))
+        console.log(Math.max(...y))
         var trace1 = [{
             x: x,
             y: y,
-            mode: 'lines'
+            mode: 'line',
+            fill: 'tozeroy'
           }];
 
         var layout1 = {
             width: 900,
             height: 170,
+            yaxis: {
+                range: [Math.min(...y)-10, Math.max(...y)+10]},
             margin: {
                 l: 40,
                 r: 0,
@@ -73,12 +77,10 @@ function getaltGraph(activity_number) {
               },
         };
 
-        var config = {responsive: true}
-        //   console.log(trace1)
-          Plotly.newPlot('elevation', trace1, layout1, config);
+        Plotly.newPlot('elevation', trace1, layout1);
     })
-    // return(altitude, distance)
-};
+
+}
 
 function buildMap(activity_number) {
     d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(data => {
