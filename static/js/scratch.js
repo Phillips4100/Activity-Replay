@@ -54,18 +54,36 @@ function getaltGraph(activity_number) {
 
         var x = distance
         var y = altitude
-        console.log(Math.min(...y))
-        console.log(Math.max(...y))
+        frames = []
+        n = x.length
+        for (var i = 0; i < n; i++) {
+            frames[i] = {data: [{x: [], y: []}]}
+            frames[i].data[0].x = x.slice(0, i+1);
+            frames[i].data[0].y = y.slice(0, i+1);
+          }
+        // console.log(frames)
+        // console.log(Math.min(...y))
+        // console.log(Math.max(...y))
         var trace1 = [{
+            // x: frames[1].data[0].x,
+            // y: frames[1].data[0].y,
             x: x,
             y: y,
-            mode: 'line',
-            fill: 'tozeroy'
+            type: 'scatter',
+            mode: 'lines',
+            line: {color: 'tan'},
+            fill: 'tozeroy',
           }];
 
         var layout1 = {
-            width: 900,
+            width: 920,
             height: 170,
+            plot_bgcolor: "light-blue",
+            xaxis: {
+                range: [
+                    frames[x.length-1].data[0].x[0],
+                    frames[x.length-1].data[0].x[x.length-1]
+                  ]},
             yaxis: {
                 range: [Math.min(...y)-10, Math.max(...y)+10]},
             margin: {
@@ -75,12 +93,43 @@ function getaltGraph(activity_number) {
                 t: 10,
                 pad: 5
               },
+            updatemenus: [{
+                x: 0,
+                y: 0,
+                yanchor: 'top',
+                xanchor: 'left',
+                showactive: false,
+                direction: 'left',
+                auto_play: true,
+                type: 'buttons',
+                pad: {t: -120, l: 10},
+                buttons: [{
+                    method: 'animate',
+                    args: [null, {
+                        mode: 'immediate',
+                        auto_play: true,
+                        fromcurrent: true,
+                        transition: {duration: 20000},
+                        frame: {duration: 0, redraw: false}
+                    }],
+                    label: 'Go!'
+                }, {
+                    method: 'animate',
+                    args: [[null], {
+                        mode: 'immediate',
+                        transition: {duration: 0},
+                        frame: {duration: 0, redraw: false}
+                    }],
+                    label: 'Stop'
+                }]
+            }]
         };
-
+        
         Plotly.newPlot('elevation', trace1, layout1);
-    })
-
-}
+        }).then(function() {
+          Plotly.addFrames('elevation', frames);
+        });
+    }
 
 function buildMap(activity_number) {
     d3.json(`http://127.0.0.1:5000/geojson/${activity_number}`).then(data => {
@@ -88,7 +137,7 @@ function buildMap(activity_number) {
         // Create the tile layer that will be the background of our map
         var gomap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
             attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-            maxZoom: 18,
+            maxZoom: 16,
             id: "outdoors-v11",
             accessToken: API_KEY
         });
@@ -243,7 +292,7 @@ function buildMap(activity_number) {
 
     function transition() {
         linePath.transition()
-            .duration(20000)
+            .duration(25000)
             .attrTween("stroke-dasharray", tweenDash)
     }
     function tweenDash() {
