@@ -320,7 +320,7 @@ function drawGauge(opt) {
     needlePath.transition()
         .duration(1000)
         //.delay(0)
-        .ease(d3.easeElasticOut, 1, 0.9)
+        .ease(d3.easeElasticOut, 1, 1)
         //.attr("transform", function(d) 
         .attrTween("transform", function (d, i, a) {
             needleAngle = valueScale(opt.needleVal)
@@ -336,7 +336,7 @@ function drawGauge(opt) {
 
     unitsLabel.transition()
         .duration(1000)
-        .ease(d3.easeElasticOut, 1, 0.9)
+        .ease(d3.easeElasticOut, 1, 1)
         .tween("text", function (d) {
             var i = d3.interpolateString(opt.minVal, opt.needleVal)
 
@@ -355,7 +355,7 @@ function drawGauge(opt) {
             oldVal = opt.needleVal
         needlePath.transition()
             .duration(1000)
-            .ease(d3.easeElasticOut, 1, 0.9)
+            .ease(d3.easeElasticOut, 1, 1)
             .attrTween("transform", function (d, i, a) {
                 needleAngleOld = valueScale(oldVal) - opt.zeroNeedleAngle
                 needleAngleNew = valueScale(newVal) - opt.zeroNeedleAngle
@@ -372,7 +372,7 @@ function drawGauge(opt) {
 
         unitsLabel.transition()
             .duration(1000)
-            .ease(d3.easeElasticOut, 1, 0.9)
+            .ease(d3.easeElasticOut, 1, 1)
             .tween("text", function (d) {
                 var i = d3.interpolateString(oldVal, newVal)
 

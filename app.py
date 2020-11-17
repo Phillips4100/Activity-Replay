@@ -33,8 +33,57 @@ def convert(n):
 def index():
     return render_template("index.html")
 
-@app.route("/summary/<activity_id>")
-def summary_data(activity_id):
+@app.route("/summarytable")
+def summarytable():
+    return render_template("summarytable.html")
+
+# @app.route("/summary")
+# def summary():
+#     data = engine.execute("SELECT * FROM activities")
+
+#     summary = [{
+#     "id": d.act_id,
+#     "name": d.act_name,
+#     "date": d.act_date,
+#     "type": d.act_type,
+#     "total_distance": d.act_distance,
+#     "duration": d.act_tot_time,
+#     "elevation_gain": d.act_elegain,
+#     "elevation_loss": d.act_eleloss,
+#     "avg_speed": d.act_avgspeed,
+#     "max_speed": d.act_max_speed,
+#     "timestamp": d.act_timestamp,
+#     "avg_hrt_rate": d.act_avg_hrt_rate,
+#     "max_hrt_rate": d.act_max_hrt_rate,
+#     "calories": d.act_calories,
+#     } for d in data ]
+
+#     return jsonify(summary)
+
+@app.route("/activity/list")
+def summary_data():
+    # Get activity summary data
+    data = session.query(Activities).all()
+    Asum = [{
+    "id": d.act_id,
+	"name": d.act_name,
+	"date": d.act_date,
+	"type": d.act_type,
+    "total_distance": round(d.act_distance*0.000621371, 2),
+	"duration": convert(round(d.act_tot_time, 0)),
+	"elevation_gain": (d.act_elegain*3.28084),
+	"elevation_loss": (d.act_eleloss*3.28084),
+	"avg_speed": (f'{round(d.act_avgspeed*2.24, 1)}'),
+	"max_speed": (f'{round(d.act_max_speed*2.24, 1)}'),
+	"timestamp": d.act_timestamp,
+    "avg_hrt_rate": d.act_avg_hrt_rate,
+    "max_hrt_rate": d.act_max_hrt_rate,
+    "calories": d.act_calories,
+    } for d in data ]
+    return jsonify(Asum)
+
+@app.route("/activity/<activity_id>")
+def avtivity_summary(activity_id):
     # Get activity summary data
     data = session.query(Activities).filter_by(act_id=activity_id).first()
     duration = convert(round(data.act_tot_time, 0))

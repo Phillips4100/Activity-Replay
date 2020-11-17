@@ -18,7 +18,7 @@ function dropDown(ids) {
 
 function buildTable(activityID) {
     var table = d3.select("#activity-summary")
-    d3.json(`http://127.0.0.1:5000/summary/${activityID}`).then((data) => {
+    d3.json(`http://127.0.0.1:5000/activity/${activityID}`).then((data) => {
         Object.entries(data).forEach(([key, value]) => {
             if (key=="name") {
                 key = "name"
@@ -109,7 +109,10 @@ function getaltGraph(activity_number) {
                         mode: 'immediate',
                         auto_play: true,
                         fromcurrent: true,
-                        transition: {duration: 20000},
+                        transition: {
+                            duration: "20s",
+                            auto_play: true,
+                        },
                         frame: {duration: 0, redraw: false}
                     }],
                     label: 'Go!'

@@ -77,3 +77,18 @@ text-shadow: 1px 1px 1px #FFF, 3px 3px 5px #000;
 font-weight: bold;
 font-size: 13px;
 }
+.table-area {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;;
+}
+tr {
+  border: 1px solid gray;
+  padding: 5px;
+}
+th {
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 1px solid gray;
+  padding: 5px;
+}
